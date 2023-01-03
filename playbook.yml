@@ -1,0 +1,29 @@
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/setup_repo.yml
+    - vars/install_dbserver.yml
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 14.6
+        pg_type: "PG"
+        disable_logging: false
+
+  roles:
+    - role: setup_repo
+    - role: install_dbserver
+    - role: init_dbserver
+    - role: setup_replication
+    - role: setup_pgpool2
+    - role: manage_pgpool2
+    - role: manage_dbserver
+    - role: setup_pgbouncer
+    - role: manage_pgbouncer
+    - role: setup_barmanserver
+    - role: setup_barman
+    - role: autotuning

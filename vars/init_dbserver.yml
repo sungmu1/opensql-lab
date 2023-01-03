@@ -1,0 +1,5 @@
+---
+pg_data: "/hypersql/pg/14/data"
+pg_wal: "/hypersql/pg/14/pg_wal"
+pg_log: "/hyperslq/pg/14/log/pg_log"
+pg_local_wal_archive_dir: "/hypersql/pg/14/archive"
