@@ -3,9 +3,9 @@
   name: Postgres deployment playbook
   become: true
   gather_facts: true
-  vars_files:
-    - vars/setup_repo.yml
-    - vars/install_dbserver.yml
+
+  collections:
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -13,6 +13,12 @@
         pg_version: 14.6
         pg_type: "PG"
         disable_logging: false
+    - name: Set variable
+      ansible.builtin.include_vars: 
+        dir: vars
+        ignore_unknown_extensions: True
+        extensions:
+          - 'yml'
 
   roles:
     - role: setup_repo

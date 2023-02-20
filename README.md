@@ -1,4 +1,4 @@
-# playbook-examples
+# opensql-lab
 
 This directory consists of playbook, inventory, and vars directory. Hosts expressed in inventory are a set of settings that must be set in inventory when using a role. Settings for each host(e.g. 'primary', 'standby') are examples, and should be divided according to use and used appropriately.
 
@@ -24,4 +24,3 @@ Looking at the structure of playbook-example:
     ├── setup_repmgr.yml
     └── setup_repo.yml
 ```
-
