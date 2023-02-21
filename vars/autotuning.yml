@@ -1,0 +1,15 @@
+---
+# This is a variable file for using autotuning as a role.
+#
+# For details on user defined variables of each role, 
+# refer to README.md and roles/<role_name>/default/main.yml.
+#
+# "Tuned" is configure system and dynamical tuning daemon.
+# It can be tuning kernel parameters.
+tuned_profile: "postgres"
+tuned_configuration_dir: "/etc/tuned"
+ssd_disk: yes
+#
+# If not specified, it is set to 4 * cpu cores at least 100.
+# This is set when you want to specify a fixed connection value.
+#pg_max_connections: ""
