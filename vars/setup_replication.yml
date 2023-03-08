@@ -1,7 +1,7 @@
 ---
 # This is a variable file for using setup_replication as a role.
 #
-# For details on user defined variables of each role, 
+# For details on user defined variables of each role,
 # refer to README.md and roles/<role_name>/default/main.yml.
 #
 # If force_replication is true, delete directory pg_data, pg_default_data,

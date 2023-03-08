@@ -1,7 +1,7 @@
 ---
 # This is a variable file for using install_dbserver as a role.
 #
-# For details on user defined variables of each role, 
+# For details on user defined variables of each role,
 # refer to README.md and roles/<role_name>/default/main.yml.
 #
 # If force_install is true, delete package related postgresql

@@ -1,13 +1,19 @@
 ---
 # This is a variable file for using manage_dbserver as a role.
 #
-# For details on user defined variables of each role, 
+# For details on user defined variables of each role,
 # refer to README.md and roles/<role_name>/default/main.yml.
 #
 # Set PostgreSQL parameter. It just added or modified.
 #pg_postgres_conf_params:
 #  - name: listen_addresses
 #    value: "*"
+#
+# Set PostgreSQL comma(,) seperated parameters.
+#pg_multi_params
+# - name: "shared_preload_libraries"
+#   value: "btree_gist"
+#   state: present
 #
 # Set host based authentication in $PGDATA/pg_hba.conf.
 # After set on, PostgreSQL server reload.
@@ -45,6 +51,7 @@
 #    schema: pg_catalog
 #    objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
 #    type: function
+#
 #pg_grant_roles:
 #  - role: pg_monitor
 #    user: postgres_user
@@ -55,16 +62,18 @@
 #pg_sql_scripts:
 #  - file_path: "/usr/postgres/sample.sql"
 #    db: postgres
+#
 #pg_copy_files:
 #  - file: "./test.sh"
 #    remote_file: "/var/lib/postgres/test.sh"
 #    owner: postgres
 #    group: postgres
 #    mode: 0700
+#
 #pg_query:
 #  - query: "Update test set a=b"
 #    db: postgres
-# 
+#
 # Add or Delete in pg_pass file(~/.pgpass)
 #pg_pgpass_values:
 #  - host: "127.0.0.1"

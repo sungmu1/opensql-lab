@@ -1,16 +1,16 @@
 ---
 # This is a variable file for using manage_pgpool2 as a role.
 #
-# For details on user defined variables of each role, 
+# For details on user defined variables of each role,
 # refer to README.md and roles/<role_name>/default/main.yml.
 #
-# Set the PostgreSQL user to run queries 
+# Set the PostgreSQL user to run queries
 barman_pg_user: "barman"
 barman: true
 #
 # Set barman server IP.
 #barman_server_private_ip: 10.0.0.123
-# 
+#
 # Set barman backup method.
 # Available value: "rsync", "postgres"
 barman_backup_method: "rsync"

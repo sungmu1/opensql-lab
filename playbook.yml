@@ -14,7 +14,7 @@
         pg_type: "PG"
         disable_logging: false
     - name: Set variable
-      ansible.builtin.include_vars: 
+      ansible.builtin.include_vars:
         dir: vars
         ignore_unknown_extensions: True
         extensions:
