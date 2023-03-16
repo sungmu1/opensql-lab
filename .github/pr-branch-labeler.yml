@@ -1,0 +1,18 @@
+# Apply label "release" if only "release"
+release:
+  head: "release"
+
+prerelease:
+  head: "release/pre/*"
+
+# Apply label "feature" if head matches "feature/*"
+feature:
+  head: "feature/*"
+
+# Apply label "hotfix" if head matches "hotfix/*"
+hotfix:
+  head: "hotfix/*"
+
+# Apply label "patch" if head matches "patch/*"
+patch:
+  head: "patch/*"

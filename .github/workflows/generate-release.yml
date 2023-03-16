@@ -1,0 +1,133 @@
+name: release-action-template
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - master
+
+jobs:
+  update_release_note:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v2
+
+      - name: Display source branch
+        run: echo "PR source branch is ${{ github.event.pull_request.head.ref }}"
+
+      - name: Set branch name as variable
+        run: echo "BRANCH_NAME=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+
+      - name: Set version type
+        run: |
+          echo "VERSION_TYPE=$(echo ${{ env.BRANCH_NAME }} | cut -d'/' -f1)" >> $GITHUB_ENV
+          VALIDATE_PRE=$(echo ${{ env.BRANCH_NAME }} | cut -d'/' -f2)
+          if [ "${VALIDATE_PRE}" == "pre" ]; then
+            echo "PRERELEASE_NAME=$(echo ${{ env.BRANCH_NAME }} | cut -d'/' -f3)" >> $GITHUB_ENV
+          fi
+
+      - name: Set Incremental variable
+        run: |
+          if [ "${{ env.VERSION_TYPE }}" == "release" ]; then
+            INCREMENTAL_TYPE="MAJOR"
+          elif [ "${{ env.VERSION_TYPE }}" == "feature" ]; then
+            INCREMENTAL_TYPE="MINOR"
+          elif [ "${{ env.VERSION_TYPE }}" == "hotfix" ]; then
+            INCREMENTAL_TYPE="MINOR"
+          elif [ "${{ env.VERSION_TYPE }}" == "patch" ]; then
+            INCREMENTAL_TYPE="PATCH"
+          else
+            INCREMENTAL_TYPE="PATCH"
+          fi
+          echo "INCREMENTAL_TYPE=$INCREMENTAL_TYPE" >> $GITHUB_ENV
+
+      #https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
+      - name: Check release existence
+        id: check_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        run: |
+          releases=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/releases)
+
+          echo $releases
+          if [ "$(echo "$releases" | jq '. | length')" -gt 0 ]; then
+            echo "Releases exist"
+            echo "exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "No releases found"
+            echo "exist=false" >> $GITHUB_OUTPUT
+          fi
+
+      #https://github.com/marketplace/actions/get-latest-release
+      - name: Get Current Release
+        if: ${{ steps.check_release.outputs.exist == 'true' }}
+        id: get_current_release
+        uses: pozetroninc/github-action-get-latest-release@master
+        env:
+            GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Set Current Release tag name, prerelease version
+        run: |
+          # Remove 'v' from tag name
+          CURRENT_TAG_NAME=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f1 | sed 's/^v//')
+          if [ -z $CURRENT_TAG_NAME ]; then
+            echo "CURRENT_TAG_NAME=0.0.0" >> $GITHUB_ENV
+          else
+            echo "CURRENT_TAG_NAME=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f1 | sed 's/^v//')" >> $GITHUB_ENV
+          fi
+
+          # Set prerelease value
+          CURRENT_PRERELEASE=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f2)
+          echo "CURRENT_PRERELEASE=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f2)" >> $GITHUB_ENV
+          if [ -z "${{ env.PRERELEASE_NAME }}" ]; then
+            echo "PRERELEASE_TYPE="REMOVE"" >> $GITHUB_ENV
+            if [ -v "$CURRENT_PRERELEASE" ]; then
+              echo "INCREMENTAL_TYPE="NONE"" >> $GITHUB_ENV
+            fi
+          else
+            echo "PRERELEASE_TYPE="${{ env.PRERELEASE_NAME }}"" >> $GITHUB_ENV
+            if [ -v "$CURRENT_PRERELEASE" ]; then
+              echo "INCREMENTAL_TYPE="NONE"" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Set prerelease version
+        run: |
+          # Set prerelease value
+          if [ "${{ env.PRERELEASE_TYPE }}" == "REMOVE" ]; then
+            echo "PRERELEASE=false" >> $GITHUB_ENV
+          elif [ -z "${{ env.PRERELEASE_TYPE }}" ]; then
+            echo "[ERROR] PRERELEASE is not valid."
+            exit 1;
+          else
+            echo "PRERELEASE=true" >> $GITHUB_ENV
+          fi
+
+      #https://github.com/marketplace/actions/update-semantic-version
+      - name: Set new semantic version
+        id: new_version
+        uses: cookbenjamin/update-version@v1.0.1
+        with:
+          current-version: '${{ env.CURRENT_TAG_NAME }}' #X.Y.Z
+          increment-version-fragment: '${{ env.INCREMENTAL_TYPE }}'
+          prerelease-fragment: '${{ env.PRERELEASE_TYPE }}'
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        with:
+            tag_name: 'v${{ steps.new_version.outputs.updated-version }}'
+            release_name: 'v${{ steps.new_version.outputs.updated-version }}'
+            body: ${{ github.event.pull_request.body }}
+            prerelease: ${{ env.PRERELEASE }}

@@ -1,0 +1,20 @@
+name: custom-github-action
+
+on:
+  workflow_call:
+    inputs:
+      updated_version:
+        description: 'new version'
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Print Updated version
+        run: echo "${{ inputs.updated_version }}"
+      # Anything after generate release tag & note
