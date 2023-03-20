@@ -122,6 +122,18 @@ jobs:
           increment-version-fragment: '${{ env.INCREMENTAL_TYPE }}'
           prerelease-fragment: '${{ env.PRERELEASE_TYPE }}'
 
+      - name: Set current release version
+        run: |
+          echo "CURRENT_MAJOR_VERSION=$(echo ${{ env.CURRENT_TAG_NAME }} | cut -d'.' -f1)" >> $GITHUB_ENV
+
+      - name: Create release/stable branch
+        if: ${{ env.CURRENT_MAJOR_VERSION != '0' }} && ${{ env.VERSION_TYPE == 'release' }}
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GTI_ACCESS_TOKEN }}
+        with:
+          branch: 'refs/heads/release/stable/${{ env.CURRENT_MAJOR_VERSION }}'
+
       - name: Create release
         uses: actions/create-release@v1
         env:
