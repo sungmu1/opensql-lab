@@ -127,12 +127,12 @@ jobs:
           echo "CURRENT_MAJOR_VERSION=$(echo ${{ env.CURRENT_TAG_NAME }} | cut -d'.' -f1)" >> $GITHUB_ENV
 
       - name: Create release/stable branch
-        if: ${{ env.CURRENT_MAJOR_VERSION != '0' }} && ${{ env.VERSION_TYPE == 'release' }}
+        if: ${{ env.CURRENT_MAJOR_VERSION != '0' && env.VERSION_TYPE == 'release' }}
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
         with:
-          branch: 'refs/heads/release/stable/${{ env.CURRENT_MAJOR_VERSION }}'
+          branch: 'refs/heads/release%2Fstable%2F${{ env.CURRENT_MAJOR_VERSION }}'
 
       - name: Create release
         uses: actions/create-release@v1
