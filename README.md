@@ -1,5 +1,5 @@
 # opensql-lab
-
+11
 This Repository consists of playbook, inventory, and vars directory. Hosts expressed in inventory are a set of settings that must be set in inventory when using a role. Settings for each host(e.g. 'primary', 'standby') are examples, and should be divided according to use and used appropriately.
 
 The yml files in the vars directory are used as a list of 'include_vars' in the playbook, and can be used like a config file by declaring specific facts for each role. Even if you do not import the corresponding vars, it is possible to operate normally with the default settings.
