@@ -5,7 +5,7 @@ This Repository consists of playbook, inventory, and vars directory. Hosts expre
 The yml files in the vars directory are used as a list of 'include_vars' in the playbook, and can be used like a config file by declaring specific facts for each role. Even if you do not import the corresponding vars, it is possible to operate normally with the default settings.
 
 Looking at the structure of opensql-lab:
-
+2
 ```text
 ├── .gitmodules
 ├── inventory.yml
