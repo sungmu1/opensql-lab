@@ -12,7 +12,7 @@ Looking at the structure of opensql-lab:
 ├── playbook.yml
 ├── README.md
 └── vars
-    ├── autotuning.yml
+    ├── autotuning.yml11
     ├── init_dbserver.yml
     ├── install_dbserver.yml
     ├── manage_dbserver.yml
