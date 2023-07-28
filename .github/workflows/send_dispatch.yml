@@ -1,8 +1,8 @@
 name: send-dispatch-action
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ master ]
 
 jobs:
   trigger-test-deploy:
