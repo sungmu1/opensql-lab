@@ -12,5 +12,5 @@ jobs:
           curl -XPOST -u "${{ secrets.ADMIN_USERNAME }}:${{ secrets.ADMIN_ACCESS_TOKEN }}" \
                -H "Accept: application/vnd.github.everest-preview+json" \
                -H "Content-Type: application/json" \
-               https://api.github.com/repos/tmaxopensql/postgres-build-container/dispatches \
+               https://api.github.com/repos/sungmu1/pg-ansible/dispatches \
                --data '{"event_type": "deploy-ansible-repository"}'
