@@ -1,4 +1,4 @@
-name: custom-github-action
+name: send-dispatch-action
 
 on:
   release:
