@@ -103,3 +103,4 @@ The example below is the operation of setup_repo, install_dbserver, and init_dbs
         - role: install_dbserver
         - role: init_dbserver
     ```
+action test
